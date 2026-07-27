@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders | Eagles Sphere</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            margin: 0;
+            padding: 100px 20px 40px;
+        }
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            margin-bottom: 30px;
+        }
+        .order {
+            background: #111;
+            border: 1px solid #d4af37;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .no-orders {
+            text-align: center;
+            color: #aaa;
+            padding: 60px 20px;
+            font-size: 1.2rem;
+        }
+        button {
+            background: #d4af37;
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Orders</h1>
+    <div id="orders-list"></div>
+
+    <div style="text-align:center; margin-top:40px;">
+        <button onclick="window.location.href='index.html'">← Back to Home</button>
+        <button onclick="window.location.href='payment.html'" style="margin-left:10px;">Make New Payment</button>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!user) {
+            alert("Please login to view your orders");
+            window.location.href = "login.html";
+        }
+
+        function loadOrders() {
+            let orders = JSON.parse(localStorage.getItem('eaglesOrders')) || [];
+            const container = document.getElementById('orders-list');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `<div class="no-orders">You haven't made any orders yet.</div>`;
+                return;
+            }
+
+            let html = '';
+            orders.forEach((order, i) => {
+                html += `
+                    <div class="order">
+                        <p><strong>Order #${i+1}</strong> — ${new Date(order.date).toLocaleString()}</p>
+                        <p><strong>Package:</strong> ${order.package}</p>
+                        <p><strong>Amount:</strong> $${order.amount}</p>
+                        <p><strong>Status:</strong> <span style="color:#4ade80;">Payment Received</span></p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup | Eagles Sphere</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 420px;
+            width: 90%;
+            background: #111;
+            padding: 50px 30px;
+            border-radius: 16px;
+            border: 1px solid #d4af37;
+        }
+        h1 { font-family: 'Playfair Display', serif; text-align: center; color: #d4af37; margin-bottom: 30px; }
+        input { width: 100%; padding: 15px; margin: 12px 0; background: #222; border: 1px solid #444; border-radius: 8px; color: white; }
+        button { width: 100%; padding: 16px; margin: 20px 0; background: #d4af37; color: #000; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+        .toggle { text-align: center; margin-top: 20px; color: #aaa; }
+        .toggle span { color: #d4af37; cursor: pointer; text-decoration: underline; }
+        .message { text-align: center; min-height: 25px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="form-title">Create Account</h1>
+        <div class="message" id="message"></div>
+        
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="password" id="password" placeholder="Password" required>
+        
+        <button onclick="handleSubmit()">Sign Up</button>
+        
+        <div class="toggle">
+            Already have an account? <span onclick="toggleForm()">Login here</span>
+        </div>
+        
+        <button onclick="window.location.href='index.html'" style="background:#333; margin-top:20px;">
+            ← Back to Home
+        </button>
+    </div>
+
+    <script>
+        let isLogin = false;
+
+        function toggleForm() {
+            isLogin = !isLogin;
+            document.getElementById('form-title').textContent = isLogin ? "Login" : "Create Account";
+            document.querySelector('button').textContent = isLogin ? "Login" : "Sign Up";
+        }
+
+        function handleSubmit() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const msg = document.getElementById('message');
+
+            if (!email || !password) {
+                msg.innerHTML = '<span style="color:red">Email and password required</span>';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('eaglesUsers')) || [];
+
+            if (isLogin) {
+                const user = users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    msg.innerHTML = `<span style="color:#4ade80">Welcome back, ${user.name}!</span>`;
+                    setTimeout(() => window.location.href = 'index.html', 1200);
+                } else {
+                    msg.innerHTML = '<span style="color:red">Invalid email or password</span>';
+                }
+            } else {
+                if (users.find(u => u.email === email)) {
+                    msg.innerHTML = '<span style="color:red">Email already exists</span>';
+                    return;
+                }
+                const newUser = { name: name || "Eagles Fan", email, password, createdAt: new Date().toISOString() };
+                users.push(newUser);
+                localStorage.setItem('eaglesUsers', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(newUser));
+                
+                msg.innerHTML = `<span style="color:#4ade80">Account created! Welcome, ${newUser.name}.</span>`;
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            }
+        }
+    </script>
+</body>
+</html>

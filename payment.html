@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment | Eagles Sphere Las Vegas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            margin: 0;
+            padding-top: 80px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 { text-align: center; color: #d4af37; margin-bottom: 30px; }
+        .user-info { text-align: center; margin-bottom: 30px; color: #aaa; }
+        .package {
+            background: #111;
+            border: 1px solid #d4af37;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .package-title { font-size: 1.5rem; color: #d4af37; }
+        .price { font-size: 3rem; font-weight: 700; margin: 10px 0; }
+        button {
+            width: 100%;
+            padding: 16px;
+            margin: 8px 0;
+            background: #d4af37;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .crypto-options { margin-top: 15px; display: none; }
+        .crypto-item { margin: 15px 0; text-align: left; }
+        .address-box {
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+        .copy-btn {
+            background: #333;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Choose Package</h1>
+        <div class="user-info" id="user-info">Loading...</div>
+
+        <!-- Tickets -->
+        <div class="package">
+            <div class="package-title">TICKETS</div>
+            <div class="price">$800</div>
+            <button onclick="showCrypto('tickets', 800)">Pay with Crypto</button>
+            <div class="crypto-options" id="crypto-tickets"></div>
+        </div>
+
+        <!-- Travel -->
+        <div class="package">
+            <div class="package-title">TRAVEL PACKAGES</div>
+            <div class="price">$1,200</div>
+            <button onclick="showCrypto('travel', 1200)">Pay with Crypto</button>
+            <div class="crypto-options" id="crypto-travel"></div>
+        </div>
+
+        <!-- VIP -->
+        <div class="package">
+            <div class="package-title">VIP EXPERIENCE</div>
+            <div class="price">$2,000</div>
+            <button onclick="showCrypto('vip', 2000)">Pay with Crypto</button>
+            <div class="crypto-options" id="crypto-vip"></div>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (user) {
+            document.getElementById('user-info').innerHTML = `Logged in as <strong>${user.name}</strong>`;
+        } else {
+            document.getElementById('user-info').innerHTML = "Please login first";
+        }
+
+        function showCrypto(type, amount) {
+            const addresses = {
+                BTC: "bc1qrudvqgmxapuhke0a33pas06458nrmrhjnrfzlr",
+                ETH: "0x43dfe518ea8646555f0202fbb5c3d062fef49ef4",
+                SOL: "2HWKuZthr9wnNY4hm5rmfHGPqkU7dd9Wc5aZxXLVfuDD"
+            };
+
+            const div = document.getElementById('crypto-' + type);
+            div.style.display = 'block';
+            div.innerHTML = `
+                <p style="margin:10px 0; text-align:center;">Send exactly <strong>$${amount}</strong></p>
+                
+                <div class="crypto-item">
+                    <strong>Bitcoin (BTC)</strong>
+                    <div class="address-box" id="addr-btc-\( {type}"> \){addresses.BTC}</div>
+                    <button class="copy-btn" onclick="copyToClipboard('${addresses.BTC}', this)">Copy BTC Address</button>
+                </div>
+                
+                <div class="crypto-item">
+                    <strong>Ethereum (ETH)</strong>
+                    <div class="address-box" id="addr-eth-\( {type}"> \){addresses.ETH}</div>
+                    <button class="copy-btn" onclick="copyToClipboard('${addresses.ETH}', this)">Copy ETH Address</button>
+                </div>
+                
+                <div class="crypto-item">
+                    <strong>Solana (SOL)</strong>
+                    <div class="address-box" id="addr-sol-\( {type}"> \){addresses.SOL}</div>
+                    <button class="copy-btn" onclick="copyToClipboard('${addresses.SOL}', this)">Copy SOL Address</button>
+                </div>
+            `;
+        }
+
+        function copyToClipboard(text, btn) {
+            // Try modern way
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = "✅ Copied!";
+                setTimeout(() => btn.textContent = originalText, 2000);
+            }).catch(() => {
+                // Fallback for older browsers or local files
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = btn.textContent;
+                btn.textContent = "✅ Copied!";
+                setTimeout(() => btn.textContent = originalText, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

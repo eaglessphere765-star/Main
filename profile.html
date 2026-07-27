@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Eagles Sphere Las Vegas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            padding: 100px 20px 40px;
+        }
+        
+        .profile-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #111;
+            padding: 50px 30px;
+            border-radius: 16px;
+            border: 1px solid #d4af37;
+            text-align: center;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #d4af37;
+            margin-bottom: 30px;
+        }
+        
+        .info {
+            text-align: left;
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        
+        .info p {
+            margin: 15px 0;
+            font-size: 1.1rem;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .logout-btn {
+            background: #c42b2b;
+            color: white;
+        }
+        
+        .home-btn {
+            background: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h1>My Profile</h1>
+        
+        <div class="info" id="profile-info">
+            <!-- Filled by JavaScript -->
+        </div>
+        
+        <button onclick="window.location.href='index.html'" class="home-btn">
+            ← Back to Home
+        </button>
+        
+        <button onclick="logout()" class="logout-btn">
+            Logout
+        </button>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!user) {
+            alert("Please login first");
+            window.location.href = "login.html";
+        } else {
+            document.getElementById('profile-info').innerHTML = `
+                <p><strong>Name:</strong> ${user.name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Member Since:</strong> ${new Date(user.createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}</p>
+                <hr style="margin:20px 0; border-color:#444">
+                <p><strong>Account Type:</strong> Fan / Ticket Holder</p>
+            `;
+        }
+        
+        function logout() {
+            if (confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem('currentUser');
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+</body>
+</html>
